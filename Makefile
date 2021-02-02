@@ -1,3 +1,5 @@
+APP_MODULE = erpegobotek
+
 
 # INSTALLATION TARGETS
 install:
@@ -7,14 +9,17 @@ install:
 
 # BOT RUNNING TARGETS
 local-run-discord:
-	poetry run python erpegobotek\bot\discord
+	poetry run python $(APP_MODULE)/bot/discord
 
 local-run: local-run-discord
 
-run-discord:
-	echo "Implement me"
+build-discord:
+	docker-compose -f docker/docker-compose.yaml build
 
-run: run-discord
+run-discord:
+	docker-compose -f docker/docker-compose.yaml up
+
+run: build-discord run-discord
 
 
 # DEVELOPMENT TOOLS' TARGETS, STATIC CODE ANALYSIS, LINTING, FORMATTING
@@ -38,15 +43,12 @@ format: remove-unused-imports
 
 
 # TEST RUNNING TARGETS
-local-coverage:
-	echo "Implement me"
-
-local-test-unit:
-	echo "Implement me"
-
 local-test: local-test-unit
 
-test-unit:
-	echo "Implement me"
+test-build:
+	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.test.yaml build
 
-test: test-unit
+test-run:
+	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.test.yaml up
+
+test: test-build test-run

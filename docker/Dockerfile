@@ -1,0 +1,7 @@
+FROM python:3.8.7:buster
+
+RUN pip install poetry
+RUN poetry export --format requirements.txt --output requirements.txt \
+  && pip install -r requirements.txt
+
+CMD ["python", "erpegobotek/bot/discord"]
