@@ -1,9 +1,9 @@
 import asyncio
-from typing import Optional, Type
+from typing import Optional
 
 import discord
 
-from erpegobotek.bot.discord.handlers.base import MessageHandlers
+from erpegobotek.bot.discord.handlers.base import Registry
 
 
 # NOTE: check if it is better practice to pass loggers or to just use logger object
@@ -12,12 +12,12 @@ from erpegobotek.bot.discord.handlers.base import MessageHandlers
 class DiscordBotClient(discord.Client):
     def __init__(
         self,
-        message_handlers: Type[MessageHandlers],
+        message_handle_registry: Registry,
         *,
         loop: Optional[asyncio.AbstractEventLoop] = None,
         **options,
     ):
-        self.message_handlers = message_handlers
+        self.message_handle_registry = message_handle_registry
         super().__init__(loop=loop, **options)
 
     async def on_ready(self):
@@ -27,4 +27,4 @@ class DiscordBotClient(discord.Client):
         if message.author == self.user:
             return
 
-        await self.message_handlers.match(message)
+        await self.message_handle_registry.handle_message(message)
